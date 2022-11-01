@@ -41,6 +41,34 @@ class _QuizPageState extends State<QuizPage> {
         question: 'Fatih Sultan Mehmet has never eaten potatoes', answer: true),
   ];
   int questionNo = 0;
+  void buttonFunction(bool selection) {
+    questionBank[questionNo].answer == selection
+        ? choices.add(cCorrectIcon)
+        : choices.add(cFalseIcon);
+    questionNo = questionNo + 1;
+    if (questionNo == questionBank.length) {
+      questionNo = questionNo - 1;
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Congrats!!! You finished the test.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, 'OK');
+                setState(() {
+                  questionNo = 0;
+                  choices = [];
+                });
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -84,10 +112,7 @@ class _QuizPageState extends State<QuizPage> {
                           ),
                           onPressed: () {
                             setState(() {
-                              questionBank[questionNo].answer == false
-                                  ? choices.add(cCorrectIcon)
-                                  : choices.add(cFalseIcon);
-                              questionNo++;
+                              buttonFunction(false);
                             });
                           },
                         ))),
@@ -103,10 +128,7 @@ class _QuizPageState extends State<QuizPage> {
                               size: 30.0, color: Colors.white),
                           onPressed: () {
                             setState(() {
-                              questionBank[questionNo].answer == true
-                                  ? choices.add(cCorrectIcon)
-                                  : choices.add(cFalseIcon);
-                              questionNo++;
+                              buttonFunction(true);
                             });
                           },
                         ))),
